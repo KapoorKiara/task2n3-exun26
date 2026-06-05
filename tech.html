@@ -1,0 +1,113 @@
+<html>
+<head>
+  <title>Tech News</title>
+  <link rel="stylesheet" href="design.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-logo"><a href="index.html">Aether</a></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tech.html">Tech News</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="waitlist.html" class="nav-cta">Join Waitlist</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')">&#9776;</button>
+</nav>
+<div class="mobile-menu" id="mob">
+  <a href="index.html">Home</a>
+  <a href="tech.html">Tech News</a>
+  <a href="contact.html">Contact</a>
+  <a href="waitlist.html">Join Waitlist</a>
+</div>
+
+<div class="tech-header">
+  <div class="bento-label">Live Feed</div>
+  <h1>Tech <span>Advancements</span></h1>
+  <p>Latest from Hacker News — updated in real time.</p>
+</div>
+
+<div class="tech-section">
+  <div class="tech-filters">
+    <button class="filter-btn active" onclick="loadNews('story', this)">Top Stories</button>
+    <button class="filter-btn" onclick="loadNews('job', this)">Jobs</button>
+    <button class="filter-btn" onclick="loadNews('ask_hn', this)">Ask HN</button>
+  </div>
+  <div class="news-grid" id="newsGrid"></div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">Aether</div>
+  <p class="footer-copy">&copy; 2025 Aether Systems Inc.</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script>
+  function skeletons() {
+    let html = '';
+    for (let i = 0; i < 9; i++) {
+      html += '<div class="skeleton-card">' +
+        '<div class="skel skel-short"></div>' +
+        '<div class="skel skel-title"></div>' +
+        '<div class="skel skel-title2"></div>' +
+        '<div class="skel skel-meta"></div>' +
+        '</div>';
+    }
+    return html;
+  }
+
+  async function loadNews(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    const grid = document.getElementById('newsGrid');
+    grid.innerHTML = skeletons();
+
+    try {
+      const res = await fetch('https://hn.algolia.com/api/v1/search?tags=' + tag + '&hitsPerPage=12');
+      const data = await res.json();
+      const hits = data.hits;
+
+      if (!hits || !hits.length) {
+        grid.innerHTML = '<p style="color:#868e96;padding:40px;grid-column:1/-1">Nothing found right now.</p>';
+        return;
+      }
+
+      grid.innerHTML = '';
+      hits.forEach(function(item, i) {
+        const title = item.title || item.story_title || 'Untitled';
+        const author = item.author || 'unknown';
+        const points = item.points || 0;
+        const comments = item.num_comments || 0;
+        const url = item.url || ('https://news.ycombinator.com/item?id=' + item.objectID);
+        let domain = 'news.ycombinator.com';
+        try { domain = new URL(url).hostname.replace('www.', ''); } catch(e) {}
+
+        const card = document.createElement('div');
+        card.className = 'news-card';
+        card.style.animationDelay = (i * 0.04) + 's';
+        card.innerHTML =
+          '<div class="news-source">' + domain + '</div>' +
+          '<h3><a href="' + url + '" target="_blank">' + title + '</a></h3>' +
+          '<div class="news-meta">' +
+            '<span>&#9650; ' + points + '</span>' +
+            '<span>&#9654; ' + comments + '</span>' +
+            '<span>by ' + author + '</span>' +
+          '</div>';
+        grid.appendChild(card);
+      });
+    } catch(err) {
+      grid.innerHTML = '<p style="color:#868e96;padding:40px;grid-column:1/-1">Could not load stories.</p>';
+    }
+  }
+
+  loadNews('story', document.querySelector('.filter-btn.active'));
+</script>
+</body>
+</html>

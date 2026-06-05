@@ -1,0 +1,111 @@
+<html>
+<head>
+  <title>Waitlist</title>
+  <link rel="stylesheet" href="design.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-logo"><a href="index.html">Aether</a></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tech.html">Tech News</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="waitlist.html" class="nav-cta">Join Waitlist</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')">&#9776;</button>
+</nav>
+<div class="mobile-menu" id="mob">
+  <a href="index.html">Home</a>
+  <a href="tech.html">Tech News</a>
+  <a href="contact.html">Contact</a>
+  <a href="waitlist.html">Join Waitlist</a>
+</div>
+
+<div class="waitlist-page">
+  <div class="waitlist-overlay"></div>
+  <div class="waitlist-card">
+    <h1>Join the<br />Waitlist</h1>
+    <p>Be the first to know when we launch next!
+        <br /> FAHHH <br>
+    </p>
+
+    <form id="wForm" onsubmit="submitWaitlist(event)">
+      <div class="w-field">
+        <input type="text" id="w-email" placeholder="your@email.com" />
+        <div class="w-err" id="e-email">Enter a valid email address.</div>
+      </div>
+
+      <div class="radio-q">Would you like to receive updates?</div>
+      <div class="w-err" id="e-radio" style="margin-bottom:8px;">Please select an option.</div>
+      <div class="radio-row">
+        <label class="radio-pill">
+          <input type="radio" name="updates" value="yes" />
+          Yes, keep me in the loop
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="updates" value="no" />
+          No thanks
+        </label>
+      </div>
+
+      <button type="submit" class="w-submit" id="wBtn">
+        <span id="wBtnText">Reserve My Spot</span>
+        <div class="w-spinner" id="wSpinner"></div>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+  function submitWaitlist(e) {
+    e.preventDefault();
+    const email = document.getElementById('w-email').value.trim();
+    const selected = document.querySelector('input[name="updates"]:checked');
+
+    const emailErr = document.getElementById('e-email');
+    const radioErr = document.getElementById('e-radio');
+    const emailInput = document.getElementById('w-email');
+
+    let ok = true;
+
+    if (!isEmail(email)) {
+      emailErr.classList.add('show');
+      emailInput.classList.add('err');
+      ok = false;
+    } else {
+      emailErr.classList.remove('show');
+      emailInput.classList.remove('err');
+    }
+
+    if (!selected) {
+      radioErr.classList.add('show');
+      ok = false;
+    } else {
+      radioErr.classList.remove('show');
+    }
+
+    if (!ok) return;
+
+    const btn = document.getElementById('wBtn');
+    const txt = document.getElementById('wBtnText');
+    const spin = document.getElementById('wSpinner');
+
+    btn.disabled = true;
+    txt.style.display = 'none';
+    spin.style.display = 'block';
+
+    setTimeout(function() {
+      spin.style.display = 'none';
+      txt.style.display = 'block';
+      btn.disabled = false;
+      alert("You're on the list!\n\nEmail: " + email + "\nReceive updates: " + selected.value);
+      document.getElementById('wForm').reset();
+    }, 1000);
+  }
+</script>
+</body>
+</html>
