@@ -7,9 +7,9 @@
 <body>
 
 <nav class="navbar scrolled" id="navbar">
-  <div class="nav-logo"><a href="index.html">Aether</a></div>
+  <div class="nav-logo"><a href="home.html">Aether</a></div>
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
+    <li><a href="home.html">Home</a></li>
     <li><a href="tech.html">Tech News</a></li>
     <li><a href="contact.html">Contact</a></li>
     <li><a href="waitlist.html" class="nav-cta">Join Waitlist</a></li>
@@ -17,7 +17,7 @@
   <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')">&#9776;</button>
 </nav>
 <div class="mobile-menu" id="mob">
-  <a href="index.html">Home</a>
+  <a href="home.html">Home</a>
   <a href="tech.html">Tech News</a>
   <a href="contact.html">Contact</a>
   <a href="waitlist.html">Join Waitlist</a>
@@ -34,43 +34,29 @@
     <h2>Send a message</h2>
     <form id="contactForm" onsubmit="submitContact(event)">
       <div class="field" id="f-name">
-        <input type="text" id="c-name" placeholder=" " />
+        <input type="text" id="c-name" placeholder=" " required />
         <label for="c-name">Full Name</label>
-        <span class="field-err">Name is required.</span>
       </div>
       <div class="field" id="f-email">
-        <input type="text" id="c-email" placeholder=" " />
+        <input type="email" id="c-email" placeholder=" " required />
         <label for="c-email">Email Address</label>
-        <span class="field-err">Enter a valid email address.</span>
       </div>
       <div class="field" id="f-msg">
-        <textarea id="c-msg" placeholder=" " rows="4"></textarea>
+        <textarea id="c-msg" placeholder=" " rows="4" required></textarea>
         <label for="c-msg">Message</label>
-        <span class="field-err">Message cannot be empty.</span>
       </div>
       <button type="submit" class="submit-btn">Send Message</button>
     </form>
   </div>
+  
 </div>
 
 <script>
-  function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
-
-  function submitContact(e) {
-    e.preventDefault();
+ function submitContact(e) {
+    e.preventDefault(); 
     const name = document.getElementById('c-name').value.trim();
     const email = document.getElementById('c-email').value.trim();
     const msg = document.getElementById('c-msg').value.trim();
-    let ok = true;
-
-    document.getElementById('f-name').classList.toggle('error', !name);
-    document.getElementById('f-email').classList.toggle('error', !isEmail(email));
-    document.getElementById('f-msg').classList.toggle('error', !msg);
-
-    if (!name) ok = false;
-    if (!isEmail(email)) ok = false;
-    if (!msg) ok = false;
-    if (!ok) return;
 
     alert('Message received!\n\nName: ' + name + '\nEmail: ' + email + '\nMessage: ' + msg);
     document.getElementById('contactForm').reset();
